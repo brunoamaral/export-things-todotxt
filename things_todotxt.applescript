@@ -1,4 +1,6 @@
 set theFilePath to (path to desktop as Unicode text) & "Things export.txt"
+-- set theFilePath to (path to home folder as Unicode text) & "Dropbox:Apps:Things:todo.txt"
+
 
 to replaceText(someText, oldItem, newItem)
 	(*
@@ -23,7 +25,7 @@ end replaceText
 on extractThings()
 	set theList to {"Inbox", "Today", "Next", "Scheduled"}
 	
-	local extractedThings, theListItem, toDo, toDos, tdName, tdDueDate, tdNotes, noteParagraph, prToDo, prToDos, prtdName, prtdDueDate, prtdNotes, prnoteParagraph
+	local extractedThings, theListItem, toDo, toDos, tdName, tdDueDate, tdNotes, noteParagraph, prToDo, prToDos, prtdName, prtdDueDate, prtdNotes, prnoteParagraph, tdPriority
 	
 	set extractedThings to ""
 	
@@ -55,18 +57,36 @@ on extractThings()
 				
 				if (area of toDo) is not missing value then
 					set todoArea to " @" & (name of area of toDo)
+				else if (project of toDo) is not missing value then
+					set prj to project of toDo
+					if (area of prj) is not missing value then
+						set todoArea to " @" & (name of area of prj)
+					else
+						set todoArea to ""
+					end if
 				else
 					set todoArea to ""
 				end if
 				
 				if (tag names of toDo) is not equal to "" then
+					
 					set tags_of_todo to tag names of toDo
+					if "High" is in (words of tags_of_todo) then
+						set tdPriority to "(A) "
+					else if "Medium" is in (words of tags_of_todo) then
+						set tdPriority to "(B) "
+					else if "Low" is in (words of tags_of_todo) then
+						set tdPriority to "(C) "
+					else
+						set tdPriority to ""
+					end if
 					set todo_tags to " #" & replaceText(tags_of_todo, ", ", " #") of me
 				else
 					set todo_tags to ""
+					set tdPriority to ""
 				end if
 				
-				set extractedThings to tdName & tdProject & todoArea & todo_tags & tdDueDate & linefeed & extractedThings
+				set extractedThings to tdPriority & tdName & tdProject & todoArea & todo_tags & tdDueDate & linefeed & extractedThings
 				
 			end repeat
 			
