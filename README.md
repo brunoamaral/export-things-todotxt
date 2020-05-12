@@ -1,6 +1,7 @@
 export-things-todotxt
 =====================
 
+```
 	set theFilePath to (path to desktop as Unicode text) & "Things export.txt"
 
 	to replaceText(someText, oldItem, newItem)
@@ -105,3 +106,4 @@ export-things-todotxt
 			
 		end try
 	end if
+```
